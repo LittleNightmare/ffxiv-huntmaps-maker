@@ -3,3 +3,9 @@ __pycache__
 *.pyc
 .ipynb_checkpoints
 map-fix.ipynb
+.idea
+data/BNpcName.csv
+data/BNpcName_en.csv
+data/PlaceName.csv
+data/PlaceName_en.csv
+data/zone_info_cn.yaml

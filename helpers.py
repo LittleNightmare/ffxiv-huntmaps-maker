@@ -56,13 +56,13 @@ class MarksHelper:
         new_list = [t._asdict() for t in marklist]
         if filename == "str":
             return json.dumps(new_list)
-        with open(filename, "wt") as fp:
+        with open(filename, "wt", encoding="utf8") as fp:
             json.dump(new_list, fp)
 
     @staticmethod
     def load_marks(filename):
         """Load the json file and build the list of namedtuples"""
-        with open(filename, "rt") as fp:
+        with open(filename, "rt", encoding='utf-8') as fp:
             marks = json.load(fp)
 
         Mark = namedtuple("Mark", marks[0])
@@ -74,13 +74,13 @@ class MarksHelper:
         
         Sort the marks by zone, rank, name
         Sort the spawn points by x, y"""
-        with open(filename, "rt") as fp:
+        with open(filename, "rt", encoding="utf8") as fp:
             marks = json.load(fp)
 
         marks.sort(key=itemgetter("zone", "rank", "name"))
         for mark in marks:
             mark["spawns"] = sorted(mark["spawns"], key=itemgetter(0, 1))
-        with open("new_" + filename, "wt") as fp:
+        with open("new_" + filename, "wt", encoding="utf8") as fp:
             json.dump(marks, fp)
 
 
@@ -141,15 +141,15 @@ class ZoneApi:
     def save_zone_info(self, zones, as_json=False):
         """Save the data, either as yaml (default) or json"""
         if as_json:
-            with open(self.cachename + ".json", "wt") as fp:
+            with open(self.cachename + ".json", "wt", encoding="utf8") as fp:
                 json.dump(zones, fp)
                 return
-        with open(self.cachename + ".yaml", "wt") as fp:
+        with open(self.cachename + ".yaml", "wt", encoding="utf8") as fp:
             yaml.safe_dump(zones, fp)
 
     def load_zone_info(self, zones=None):
         """Load the data (yaml only)"""
-        with open(self.cachename + ".yaml", "rt") as fp:
+        with open(self.cachename + ".yaml", "rt", encoding="utf8") as fp:
             info = yaml.load(fp, Loader=yaml.Loader)
         if zones:
             for zone in list(zones.keys()):

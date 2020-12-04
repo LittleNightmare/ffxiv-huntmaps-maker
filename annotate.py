@@ -44,12 +44,12 @@ class MapAnnotator:
         zones = self._config["zones"]
         ZoneApi(zones.keys()).load_zone_info(zones)
         self._zones = zones
-        self._Mark, self._marks = MarksHelper.load_marks("data/marks.json")
+        self._Mark, self._marks = MarksHelper.load_marks("data/marks_cn.json")
         self._iscli = inspect.stack()[-2].function == "Fire"
 
     def _get_path(self, name, project=False, backup=False, ext=None):
         base = self._base_path if not project else self._project_path
-        base = base / "Saved" / "UI" / "Maps"
+        base = base / "Saved" / "UI" / "地图"
         region = self._zones[name]["region"]
         zone = self._zones[name].get("zonename", name)
         file = self._zones[name]["filename"]

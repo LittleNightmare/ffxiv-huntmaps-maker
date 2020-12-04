@@ -23,7 +23,7 @@ Coerthas Western Highlands:
   region: Coerthas
   scale: 95
 East Shroud:
-  zonename: East Shroud 00
+  zonename: East Shroud
   filename: f1f200
   region: The Black Shroud
   scale: 100
@@ -72,7 +72,7 @@ Outer La Noscea:
   region: La Noscea
   scale: 100
 South Shroud:
-  zonename: South Shroud 00
+  zonename: South Shroud
   filename: f1f300
   region: The Black Shroud
   scale: 100
