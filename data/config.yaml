@@ -23,7 +23,7 @@ legend:
     font_stroke: 1
     border_space: (5, 5)
     font_size: 30
-    font: C:\WINDOWS\FONTS\CORBELI.TTF
+    font: C:\WINDOWS\FONTS\Msyh.ttc
     shadow_color: "#444444"
     shadow_iterations: 7
 
