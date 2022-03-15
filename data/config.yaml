@@ -1,6 +1,6 @@
 tool:
-    textools_path: C:\Users\...\Documents\TexTools
-    project_path: C:\Users\...\Documents\Projects\ffxiv-huntmaps
+    textools_path: "~/Documents/TexTools"
+    project_path: "~/Documents/Projects/ffxiv-huntmaps"
     imagemagick_path: C:\Program Files\ImageMagick-7.0.10-Q16-HDRI\magick.EXE
     preview_url_template: https://raw.githubusercontent.com/RKI027/ffxiv-huntmaps/master/Saved/UI/Maps/{region}/{zone}/{file}_m.png
 
@@ -41,6 +41,7 @@ expansions:
     HW: Heavensward
     SB: Stormblood
     SHB: Shadowbringers
+    EW: Endwalker
 
 zones:
     Middle La Noscea:
@@ -253,3 +254,39 @@ zones:
         legend:
             rows: 7
             position: (60, 1640)
+    Thavnair:
+        expansion: EW
+        landmine: unknown
+        legend:
+            rows: 7
+            position: (1600, 1550)
+    Garlemald:
+        expansion: EW
+        landmine: true
+        legend:
+            rows: 7
+            position: (100, 1200)
+    Labyrinthos:
+        expansion: EW
+        landmine: unknown
+        legend:
+            rows: 7
+            position: (1500, 1500)
+    Mare Lamentorum:
+        expansion: EW
+        landmine: false
+        legend:
+            rows: 7
+            position: (1600, 1600)
+    Ultima Thule:
+        expansion: EW
+        landmine: unknown
+        legend:
+            rows: 4
+            position: (1420, 1700)
+    Elpis:
+        expansion: EW
+        landmine: false
+        legend:
+            rows: 4
+            position: (1450, 1580)

@@ -2,6 +2,7 @@ __pycache__
 */__pycache__
 *.pyc
 .ipynb_checkpoints
+.vscode/*
 map-fix.ipynb
 .idea
 data/BNpcName.csv

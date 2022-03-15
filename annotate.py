@@ -35,8 +35,12 @@ class MapAnnotator:
             a = yaml.load_all(fp, Loader=yaml.Loader)
             self._config = {k: v for i in a for k, v in i.items()}
 
-        self._base_path = pathlib.Path(self._config["tool"]["textools_path"])
-        self._project_path = pathlib.Path(self._config["tool"]["project_path"])
+        self._base_path = pathlib.Path(
+            self._config["tool"]["textools_path"]
+        ).expanduser()
+        self._project_path = pathlib.Path(
+            self._config["tool"]["project_path"]
+        ).expanduser()
         self._magickpath = self._config["tool"]["imagemagick_path"] or shutil.which(
             "magick"
         )
@@ -240,11 +244,17 @@ class MapAnnotator:
                 if info["expansion"] == expansion:
                     if info["region"] == "Norvrandt":
                         if len(expac_data["Norvrandt 1"]) < 3:
-                            expac_data["Norvrandt 1"].append((info.get("zonename", zone), info["filename"]))
+                            expac_data["Norvrandt 1"].append(
+                                (info.get("zonename", zone), info["filename"])
+                            )
                         else:
-                            expac_data["Norvrandt 2"].append((info.get("zonename", zone), info["filename"]))
+                            expac_data["Norvrandt 2"].append(
+                                (info.get("zonename", zone), info["filename"])
+                            )
                     else:
-                        expac_data[info["region"]].append((info.get("zonename", zone), info["filename"]))
+                        expac_data[info["region"]].append(
+                            (info.get("zonename", zone), info["filename"])
+                        )
 
             for zones in expac_data.values():
                 zones.sort(key=itemgetter(0))
@@ -286,7 +296,13 @@ class MapAnnotator:
         
         Saves are in the map project folder for repo update."""
 
-        maskpath_map = {"ARR": "arrhw", "HW": "arrhw", "SB": "sb", "SHB": "shb"}
+        maskpath_map = {
+            "ARR": "arrhw",
+            "HW": "arrhw",
+            "SB": "sb",
+            "SHB": "shb",
+            "EW": "ew",
+        }
         maskbase_path = self._project_path / "Blended" / "masks"
         mask_name = maskpath_map[self._zones[name]["expansion"]] + "_mask.png"
         mask_path = maskbase_path / mask_name

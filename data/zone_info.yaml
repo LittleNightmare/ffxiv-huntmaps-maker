@@ -140,3 +140,27 @@ Yanxia:
   filename: e3f200
   region: Othard
   scale: 100
+Thavnair:
+  filename: m5f100
+  region: Ilsabard
+  scale: 100
+Garlemald:
+  filename: m5f200
+  region: Ilsabard
+  scale: 100
+Labyrinthos:
+  filename: k5f100
+  region: The Northern Empty
+  scale: 100
+Mare Lamentorum:
+  filename: u5f100
+  region: The Sea of Stars
+  scale: 100
+Ultima Thule:
+  filename: u5f200
+  region: The Sea of Stars
+  scale: 100
+Elpis:
+  filename: n5f100
+  region: The World Unsundered
+  scale: 100
