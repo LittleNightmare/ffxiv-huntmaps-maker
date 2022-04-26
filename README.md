@@ -2,6 +2,8 @@
 
 Library + CLI to annotate FFXIV in-game map assets with Elite Marks spawn positions.
 
+**In this branch**, the path of the map is changed format likes `ui/map/n4f1/00/n4f100_m.tex`, you can see this [file](https://github.com/LittleNightmare/ffxiv-huntmaps-maker/blob/raw-map/data/export_map.txt)
+
 ## Installation
 
 - You need python >= 3.7
@@ -15,7 +17,7 @@ Library + CLI to annotate FFXIV in-game map assets with Elite Marks spawn positi
 
 The process is the following:
 
-1. Using TexTools, export the dds for each map somewhere (default TexTools path is a good choice)
+1. Using TexTools or others, export the dds for each map somewhere (default TexTools path is a good choice)
 2. Edit `data/config.yaml` to adjust to your preferences, especially the paths
 3. Assuming you just exported the original dds map files, run: `python annotate.py check_files` and, assuming this came out without any error, run `python annotate.py backup_files`. From there, you're ready to work.
 4. review `zone_info.yaml` in case the asset path in the game files has changed (occasionally, SE will move a map from zonename to "zonename 00"). Remove/Add/Amend a zonename entry for the zones concerned if needed. If the zonename entry doesn't exist, the script will use the true zone name.
