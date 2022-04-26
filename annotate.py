@@ -31,7 +31,7 @@ class MapAnnotator:
     user $PATH or provided in configuration)"""
 
     def __init__(self):
-        with open("data/config.yaml", "rt") as fp:
+        with open("data/config.yaml", "rt", encoding="utf-8") as fp:
             a = yaml.load_all(fp, Loader=yaml.Loader)
             self._config = {k: v for i in a for k, v in i.items()}
 
