@@ -51,14 +51,23 @@ class MapAnnotator:
         self._Mark, self._marks = MarksHelper.load_marks("data/marks_cn.json")
         self._iscli = inspect.stack()[-2].function == "Fire"
 
-    def _get_path(self, name, project=False, backup=False, ext=None):
+    def _get_path(self, name, project=False, backup=False, ext=None, use_map_id=False, dict_path_only=False):
         base = self._base_path if not project else self._project_path
-        base = base / "Saved" / "UI" / "地图"
-        region = self._zones[name]["region"]
-        zone = self._zones[name].get("zonename", name)
+        if use_map_id:
+            base = base / "ui" / "map"
+            # here is zone_id
+            region = self._zones[name]["filename"][:4]
+            # a sub id of zone? like 00, 01, 02, etc.
+            zone = self._zones[name]["filename"][4:]
+        else:
+            base = base / "Saved" / "UI" / "地图"
+            region = self._zones[name]["region"]
+            zone = self._zones[name].get("zonename", name)
         file = self._zones[name]["filename"]
         bck = "_backup" if backup else ""
         ext = ext or "dds"
+        if dict_path_only:
+            return base / region / zone
         return (base / region / zone / (file + "_m" + bck)).with_suffix("." + ext)
 
     def _get_zone_marks(self, zone, rank_remap=False):
@@ -81,11 +90,11 @@ class MapAnnotator:
             remap_rank(marks, "B")
         return marks
 
-    def check_files(self, backup=False):
+    def check_files(self, backup=False, use_map_id=True):
         """Verify the presence of asset backup files (used as source for map annotation)."""
 
         for name in self._zones:
-            path = self._get_path(name, backup=backup)
+            path = self._get_path(name, backup=backup, use_map_id=use_map_id)
             if not path.exists():
                 print(f"MISSING: file '{name}' @ '{path}'")
         print("File check complete.")
@@ -115,7 +124,7 @@ class MapAnnotator:
 
         return suspicious
 
-    def backup_files(self, warning=True):
+    def backup_files(self, warning=False):
         """Backup asset export files.
 
         Backup files are used as source to draw annotations so they *need* to be the original files.
@@ -140,12 +149,11 @@ class MapAnnotator:
             shutil.copy(path, bpath)
         print("Backup complete.")
 
-    def annotate_map(self, name, save=False, show=True):
+    def annotate_map(self, name, save=False, show=True, use_map_id=False):
         """Annotate the map of the zone `name`. Optionally save the modified asset file and its png preview
-
-        Saves are made both in the TexTools folder for easy import and to the map project folder for repo update.
-        """
-        map_layer = Image.open(self._get_path(name, backup=True))
+        
+        Saves are made both in the TexTools folder for easy import and to the map project folder for repo update."""
+        map_layer = Image.open(self._get_path(name, backup=False if use_map_id else True, use_map_id=use_map_id))
 
         marker_layer = Image.new("RGBA", map_layer.size, color=(0, 0, 0, 0))
 
@@ -214,6 +222,9 @@ class MapAnnotator:
         return img
 
     def _save_map(self, img, name):
+        # if src not exists, create it
+        if not os.path.exists(self._get_path(name, dict_path_only=True)):
+            os.makedirs(self._get_path(name, dict_path_only=True))
         src = self._get_path(name, ext="bmp")
         dst = src.with_suffix(".dds")
         img.save(src, format="bmp")
@@ -227,13 +238,13 @@ class MapAnnotator:
         preview_dst = pdst.with_suffix(".png")
         img.save(preview_dst, format="png")
 
-    def annotate_all(self):
+    def annotate_all(self, use_map_id=True):
         """Annotate and save all maps.
 
         Saves are made both in the TexTools folder for easy import and to the map project folder for repo update.
         """
         for zone in self._zones:
-            self.annotate_map(zone, save=True, show=False)
+            self.annotate_map(zone, save=True, show=False, use_map_id=use_map_id)
 
     def generate_thumbnail_table(self):
         """Generate html code for the collapsable preview tables used in the map repo's README.
