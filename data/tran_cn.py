@@ -14,7 +14,7 @@ def tran_marks():
     with open("BNpcName_en.csv", encoding="utf8", mode="r") as f:
         csv_en = csv.reader(f)
         for x in csv_en:
-            BNpcName_en.append(x[1])
+            BNpcName_en.append(x[1].lower())
 
     with open("BNpcName.csv", encoding="utf8", mode="r") as f:
         csv_cn = csv.reader(f)
@@ -31,13 +31,13 @@ def tran_marks():
             # print(table[k["name"]])
             try:
                 # print(k["name"] + ": " + table[k["name"]])
-                k["name"] = table[k["name"]]
+                cn_name = table[k["name"].lower()]
+                if cn_name != "":
+                    k["name"] = cn_name
+                else:
+                    print(k["name"]+" not exist cn name")
             except KeyError as e:
-                try:
-                    # print(k["name"] + ": " + table[k["name"].lower()])
-                    k["name"] = table[k["name"].lower()]
-                except KeyError as e:
-                    print(e)
+                print(e)
         with open("marks_cn.json", encoding="utf8", mode="w") as f:
             json.dump(marks_en, f, ensure_ascii=False, indent=4, sort_keys=True)
 
@@ -49,19 +49,25 @@ def get_place_name(table_type_cnkey=False):
     with open("PlaceName_en.csv", encoding="utf8", mode="r") as f:
         csv_en = csv.reader(f)
         for x in csv_en:
-            PlaceName_en.append(x[1])
+            PlaceName_en.append((x[0], x[1]))
 
     with open("PlaceName.csv", encoding="utf8", mode="r") as f:
         csv_cn = csv.reader(f)
         for x in csv_cn:
-            PlaceName_cn.append(x[1])
+            PlaceName_cn.append((x[0], x[1]))
 
     table = {}
     for i in range(len(PlaceName_en)):
         if table_type_cnkey:
-            table[PlaceName_cn[i]] = PlaceName_en[i]
+            if PlaceName_cn[i][0] == PlaceName_en[i][0]:
+                table[PlaceName_cn[i][1]] = PlaceName_en[i][1]
         else:
-            table[PlaceName_en[i]] = PlaceName_cn[i]
+            try:
+                if PlaceName_en[i][0] == PlaceName_cn[i][0]:
+                    table[PlaceName_en[i][1]] = PlaceName_cn[i][1]
+            except IndexError as e:
+                print(PlaceName_en[i][1])
+                table[PlaceName_en[i][1]] = "Null"
 
     return table
 
@@ -88,7 +94,8 @@ def tran_zone_info():
 
 # 将textools一个个手动导出（有好心人提供个自动吗）的地图，从英文转换到中文
 def rename_map(root):
-    table = get_place_name()
+    # 这里可以控制中文转英文或相反,True 中转英
+    table = get_place_name(False)
     dirs = os.listdir(root)
     for dir in dirs:
         current = os.path.join(root, dir)
@@ -108,8 +115,26 @@ def rename_map(root):
                 print("old: " + current)
 
 
+# 生成一个需要导出的地图资源表
+def get_map_list():
+    map_list = []
+    with open("main_export_all_data.txt", encoding="utf8", mode="r") as f:
+        for line in f:
+            # 如果包涵ui/map/，则是地图
+            if "ui/map/" in line:
+                map_list.append(line.strip())
+    # 写入map_list到txt文件
+    with open("map_list_export.txt", encoding="utf8", mode="w") as f:
+        for x in map_list:
+            f.write(x + "\n")
+    return map_list
+
+
 if __name__ == '__main__':
-    root = "C:\\Users\\...\\Documents\\TexTools\\Saved\\UI\\地图"
+    # path = "C:\\Users\\lvhao\\Documents\\TexTools\\Saved\\UI\\地图"
+    new_path = "F:\\ffxiv\\Resource_TT\\Saved\\UI\\地图"
+    print(get_place_name())
     # tran_marks()
     # tran_zone_info()
-    rename_map(root)
+    # rename_map(new_path)
+    # get_map_list()
