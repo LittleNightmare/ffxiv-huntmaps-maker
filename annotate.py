@@ -124,7 +124,7 @@ class MapAnnotator:
 
         return suspicious
 
-    def backup_files(self, warning=False):
+    def backup_files(self, warning=False, use_map_id=True):
         """Backup asset export files.
 
         Backup files are used as source to draw annotations so they *need* to be the original files.
@@ -144,16 +144,16 @@ class MapAnnotator:
             return
         self.check_files()
         for name in self._zones:
-            path = self._get_path(name)
-            bpath = self._get_path(name, backup=True)
+            path = self._get_path(name, use_map_id=use_map_id)
+            bpath = self._get_path(name, backup=True, use_map_id=use_map_id)
             shutil.copy(path, bpath)
         print("Backup complete.")
 
-    def annotate_map(self, name, save=False, show=True, use_map_id=False):
+    def annotate_map(self, name, save=False, show=True, use_map_id=True):
         """Annotate the map of the zone `name`. Optionally save the modified asset file and its png preview
         
         Saves are made both in the TexTools folder for easy import and to the map project folder for repo update."""
-        map_layer = Image.open(self._get_path(name, backup=False if use_map_id else True, use_map_id=use_map_id))
+        map_layer = Image.open(self._get_path(name, backup=True, use_map_id=use_map_id))
 
         marker_layer = Image.new("RGBA", map_layer.size, color=(0, 0, 0, 0))
 
@@ -183,7 +183,7 @@ class MapAnnotator:
         complete_map = self._draw_legend(new_map, marks, legend_rows, legend_position)
 
         if save:
-            self._save_map(complete_map, name)
+            self._save_map(complete_map, name, use_map_id=use_map_id)
         if self._iscli and show:
             complete_map.show(title=name)
             return
@@ -221,11 +221,11 @@ class MapAnnotator:
 
         return img
 
-    def _save_map(self, img, name):
+    def _save_map(self, img, name, use_map_id=True):
         # if src not exists, create it
         if not os.path.exists(self._get_path(name, dict_path_only=True)):
             os.makedirs(self._get_path(name, dict_path_only=True))
-        src = self._get_path(name, ext="bmp")
+        src = self._get_path(name, ext="bmp", use_map_id=use_map_id)
         dst = src.with_suffix(".dds")
         img.save(src, format="bmp")
         cmd = f'{self._magickpath} convert -define dds:compression=dxt1 -define dds:mipmaps=0 "{src}" "{dst}"'
