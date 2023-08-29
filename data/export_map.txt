@@ -39,3 +39,4 @@ ui/map/m5f2/00/m5f200_m.tex
 ui/map/n5f1/00/n5f100_m.tex
 ui/map/u5f1/00/u5f100_m.tex
 ui/map/u5f2/00/u5f200_m.tex
+ui/map/n4f2/00/n4f200_m.tex
