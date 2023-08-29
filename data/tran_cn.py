@@ -35,7 +35,7 @@ def tran_marks():
                 if cn_name != "":
                     k["name"] = cn_name
                 else:
-                    print(k["name"]+" not exist cn name")
+                    print(k["name"] + " not exist cn name")
             except KeyError as e:
                 print(e)
         with open("marks_cn.json", encoding="utf8", mode="w") as f:
@@ -57,7 +57,7 @@ def get_place_name(table_type_cnkey=False):
             PlaceName_cn.append((x[0], x[1]))
 
     table = {}
-    for i in range(len(PlaceName_en)):
+    for i in range(len(PlaceName_cn)):
         if table_type_cnkey:
             if PlaceName_cn[i][0] == PlaceName_en[i][0]:
                 table[PlaceName_cn[i][1]] = PlaceName_en[i][1]
@@ -92,15 +92,15 @@ def tran_zone_info():
         #     yaml.dump(zone_info, f)
 
 
-# 将textools一个个手动导出（有好心人提供个自动吗）的地图，从英文转换到中文
-def rename_map(root):
+# 将输出的地图，从英文文件夹名字转换到中文
+def rename_map(root, from_cn_to_en):
     # 这里可以控制中文转英文或相反,True 中转英
-    table = get_place_name(False)
+    table = get_place_name(from_cn_to_en)
     dirs = os.listdir(root)
     for dir in dirs:
         current = os.path.join(root, dir)
         if os.path.isdir(current):
-            rename_map(current)
+            rename_map(current, from_cn_to_en)
             try:
                 if "0" in dir:
                     place, num = dir.split(" 0")
@@ -115,7 +115,8 @@ def rename_map(root):
                 print("old: " + current)
 
 
-# 生成一个需要导出的地图资源表
+# 生成一个需要导出的地图资源表，如果你可以获取到所有ff资源的一个文本列表的话，可以用这个过滤一下
+# 实际太多了，根本用不了，建议用export_map.txt整理好的
 def get_map_list():
     map_list = []
     with open("main_export_all_data.txt", encoding="utf8", mode="r") as f:
@@ -131,10 +132,16 @@ def get_map_list():
 
 
 if __name__ == '__main__':
-    # path = "C:\\Users\\lvhao\\Documents\\TexTools\\Saved\\UI\\地图"
-    new_path = "F:\\ffxiv\\Resource_TT\\Saved\\UI\\地图"
-    print(get_place_name())
+    old_path = "F:\\ffxiv\\Resource_TT\\Saved\\UI\\地图"
+    current_path = "F:\GitHub\\ffxiv-huntmaps-maker\\Saved\\UI\\地图"
+    # print(get_place_name())
+
+    # with open("temp.txt", mode="w", encoding="utf8") as f:
+    #     for value in get_action_list().items():
+    #         f.write("{\"%s\",\"%s\"}," % (value[0], value[1]))
+    # for value in get_action_list().items():
+    #     print("{\"%s\",\"%s\"}," % (value[0], value[1]))
     # tran_marks()
     # tran_zone_info()
-    # rename_map(new_path)
+    rename_map(current_path, False)
     # get_map_list()
