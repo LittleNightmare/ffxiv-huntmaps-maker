@@ -37,7 +37,7 @@ def tran_marks():
                 else:
                     print(k["name"] + " not exist cn name")
             except KeyError as e:
-                print(e)
+                print("KeyError: " + str(e))
         with open("marks_cn.json", encoding="utf8", mode="w") as f:
             json.dump(marks_en, f, ensure_ascii=False, indent=4, sort_keys=True)
 
@@ -115,7 +115,22 @@ def rename_map(root, from_cn_to_en):
                 print("old: " + current)
 
 
-# 生成一个需要导出的地图资源表，如果你可以获取到所有ff资源的一个文本列表的话，可以用这个过滤一下
+# 基于zone_info.yaml生成地图列表
+def get_map_list_from_zone_info():
+    with open("zone_info.yaml", encoding="utf8", mode="r") as f:
+        zone_info = yaml.load(f, Loader=yaml.Loader)
+        map_list = []
+        base_path = "ui/map/"
+        for map in zone_info.values():
+            region = map["filename"][:4]
+            zone = map["filename"][4:]
+            map_list.append(base_path + region + "/" + zone + "/" + map["filename"] + "_m.tex")
+
+        with open("map_list_from_zone_info.txt", encoding="utf8", mode="w") as f:
+            for x in map_list:
+                f.write(x + "\n")
+        return map_list
+
 # 实际太多了，根本用不了，建议用export_map.txt整理好的
 def get_map_list():
     map_list = []
@@ -131,9 +146,22 @@ def get_map_list():
     return map_list
 
 
+def delete_png_under_folder(root):
+    dirs = os.listdir(root)
+    for dir in dirs:
+        current = os.path.join(root, dir)
+        if os.path.isdir(current):
+            delete_png_under_folder(current)
+        else:
+            if current.endswith(".png"):
+                os.remove(current)
+
+
+
 if __name__ == '__main__':
     old_path = "F:\\ffxiv\\Resource_TT\\Saved\\UI\\地图"
     current_path = "F:\GitHub\\ffxiv-huntmaps-maker\\Saved\\UI\\地图"
+    output = "F:\\GitHub\\ffxiv-huntmaps-maker\\ui\\map"
     # print(get_place_name())
 
     # with open("temp.txt", mode="w", encoding="utf8") as f:
@@ -141,7 +169,9 @@ if __name__ == '__main__':
     #         f.write("{\"%s\",\"%s\"}," % (value[0], value[1]))
     # for value in get_action_list().items():
     #     print("{\"%s\",\"%s\"}," % (value[0], value[1]))
-    # tran_marks()
+    tran_marks()
     # tran_zone_info()
-    rename_map(current_path, False)
+    # rename_map(current_path, False)
     # get_map_list()
+    # delete_png_under_folder(output)
+    # get_map_list_from_zone_info()

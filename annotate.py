@@ -231,7 +231,7 @@ class MapAnnotator:
         cmd = f'{self._magickpath} convert -define dds:compression=dxt1 -define dds:mipmaps=0 "{src}" "{dst}"'
         subprocess.run(cmd, capture_output=True)
         src.unlink()
-        pdst = self._get_path(name, ext="dds", project=True)
+        pdst = self._get_path(name, ext="dds", project=True, use_map_id=use_map_id)
         os.makedirs(os.path.dirname(pdst), exist_ok=True)
         shutil.copy(dst, pdst)
 

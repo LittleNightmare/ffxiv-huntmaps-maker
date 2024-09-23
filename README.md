@@ -2,7 +2,7 @@
 
 Library + CLI to annotate FFXIV in-game map assets with Elite Marks spawn positions.
 
-**In this branch**, the path of the map is changed format likes `ui/map/n4f1/00/n4f100_m.tex`, you can see this [file](https://github.com/LittleNightmare/ffxiv-huntmaps-maker/blob/raw-map/data/export_map.txt)
+**In this branch**, the path of the map is changed format likes `ui/map/n4f1/00/n4f100_m.tex`, you can see this [file](https://github.com/LittleNightmare/ffxiv-huntmaps-maker/blob/raw-map/data/map_list_from_zone_info.txt)
 
 ## Installation
 
@@ -17,18 +17,21 @@ Library + CLI to annotate FFXIV in-game map assets with Elite Marks spawn positi
 
 The process is the following:
 
-1. In this branch, use [Alpha](https://github.com/NotNite/Alpha) to export the map files as .tex. You could find map list [here]((https://github.com/LittleNightmare/ffxiv-huntmaps-maker/blob/raw-map/data/export_map.txt))
-2. Then, use [ffxiv-tex-converter](https://github.com/emarron/ffxiv-tex-converter), to covert the .tex files to .dds
+1. In this branch, use [Alpha](https://github.com/NotNite/Alpha) to export the map files as .tex. You could find map list [here](https://github.com/LittleNightmare/ffxiv-huntmaps-maker/blob/raw-map/data/map_list_from_zone_info.txt)
+2. Then, use [ffxiv-tex-converter](https://github.com/kartoffels123/ffxiv-tex-converter), to covert the `.tex` files to `.dds`
 2. Edit `data/config.yaml` to adjust to your preferences, especially the paths. In this branch, the `textools_path` should contain `ui` folder.
 3. Assuming you just exported the original dds map files, run: `python annotate.py check_files` and, assuming this came out without any error, run `python annotate.py backup_files`. From there, you're ready to work.
 4. review `zone_info.yaml` in case the asset path in the game files has changed (occasionally, SE will move a map from zonename to "zonename 00"). Remove/Add/Amend a zonename entry for the zones concerned if needed. If the zonename entry doesn't exist, the script will use the true zone name.
 5. Edit the marker/legend styles in `data/config.yaml` as desired
 6. Run `python annotate.py annotate_map zone_name` to annotate that zone. It will open a view of the annotated map
 7. Once ready, run `python annotate.py annotate_all`. All maps will be rendered and saved (both in the project path and in original asset path)
-8. With TexTools:
-
-    * import one by one the new dds files
-    * (optionally, for distribution), create a mod pack with these assets.
+8. In this branch, all maps located in `ui/map` folder, you can use [ffxiv-tex-converter](https://github.com/kartoffels123/ffxiv-tex-converter) convert back to `.tex`
+8. With Penumbra, you can: (I'm not very familiar with this process, there may be a simpler way)
+   1. Create an empty mod with Penumbra
+   2. Copy the `ui` folder to the mod folder that you just created
+   3. Go to `Edit Mod` -> `Reload Mod`
+   4. Go to `Advanced Settings` -> `File Redirection` -> `Select Unused` -> `Add Paths` -> `Apply Changes`
+   5. Done!
 
 It can also be used as a library, from a jupyter notebook (for exampe) created in the same directory:
 
