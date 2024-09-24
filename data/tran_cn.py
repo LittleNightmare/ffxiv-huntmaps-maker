@@ -4,6 +4,8 @@ import os
 
 import yaml
 
+import pandas as pd
+
 
 # 所有csv可以分别在ffxiv-dataming找到，国际服增加后缀_en，国服不变
 
@@ -44,30 +46,26 @@ def tran_marks():
 
 # 生成一个地名对照字典
 def get_place_name(table_type_cnkey=False):
-    PlaceName_en = []
-    PlaceName_cn = []
-    with open("PlaceName_en.csv", encoding="utf8", mode="r") as f:
-        csv_en = csv.reader(f)
-        for x in csv_en:
-            PlaceName_en.append((x[0], x[1]))
+    # 读取 CSV 文件
+    df_en = pd.read_csv("PlaceName_en.csv", encoding="utf8", header= 0, skiprows=[1, 2], usecols=[0, 1])
+    df_cn = pd.read_csv("PlaceName.csv", encoding="utf8", header= 0, skiprows=[1, 2], usecols=[0, 1])
 
-    with open("PlaceName.csv", encoding="utf8", mode="r") as f:
-        csv_cn = csv.reader(f)
-        for x in csv_cn:
-            PlaceName_cn.append((x[0], x[1]))
+    df_en = df_en.dropna()
+    df_cn = df_cn.dropna()
 
+    # 合并两个 DataFrame
+    df = pd.merge(df_en, df_cn, left_on='key', right_on='key', suffixes=('_en', '_cn'))
+
+    # 生成字典，避免覆盖重复的键
     table = {}
-    for i in range(len(PlaceName_cn)):
-        if table_type_cnkey:
-            if PlaceName_cn[i][0] == PlaceName_en[i][0]:
-                table[PlaceName_cn[i][1]] = PlaceName_en[i][1]
-        else:
-            try:
-                if PlaceName_en[i][0] == PlaceName_cn[i][0]:
-                    table[PlaceName_en[i][1]] = PlaceName_cn[i][1]
-            except IndexError as e:
-                print(PlaceName_en[i][1])
-                table[PlaceName_en[i][1]] = "Null"
+    if table_type_cnkey:
+        for cn, en in zip(df['0_cn'], df['0_en']):
+            if cn not in table:
+                table[cn] = en
+    else:
+        for en, cn in zip(df['0_en'], df['0_cn']):
+            if en not in table:
+                table[en] = cn
 
     return table
 
