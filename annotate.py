@@ -231,6 +231,7 @@ class MapAnnotator:
         cmd = f'{self._magickpath} convert -define dds:compression=dxt1 -define dds:mipmaps=0 "{src}" "{dst}"'
         subprocess.run(cmd, capture_output=True)
         src.unlink()
+        # 这里的use_map_id可以考虑改成False, 这样可以提供给人读的文件夹名，然后用tran_cn里的rename_map改成中文就行。用了use_map_id就是给Penumbra用的文件夹名
         pdst = self._get_path(name, ext="dds", project=True, use_map_id=use_map_id)
         os.makedirs(os.path.dirname(pdst), exist_ok=True)
         shutil.copy(dst, pdst)
