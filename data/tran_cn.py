@@ -129,6 +129,34 @@ def get_map_list_from_zone_info():
                 f.write(x + "\n")
         return map_list
 
+def transfer_map_name_to_id():
+    zone_list = {}
+    with open("zone_info.yaml", encoding="utf8", mode="r") as f:
+        zone_info = yaml.load(f, Loader=yaml.Loader)
+
+        for k, v in zone_info.items():
+            zone_list[k] = v["filename"][:4] + "/" + v["filename"][4:]
+            # zone_list[v["filename"][:4] + "/" + v["filename"][4:]] = k
+    with open("Map.csv", encoding="utf8", mode="r") as f:
+        csv_en = csv.reader(f)
+        TerritoryType_list = {}
+        map_list2 = {}
+        for x in csv_en:
+            try:
+                TerritoryType_list[x[7]] = int(x[16])
+                map_list2[x[7]] = int(x[0])
+            except Exception as e:
+                continue
+
+    with open("marks_cn.json", encoding="utf8", mode="r") as f:
+        marks = json.load(f)
+        for mark in marks:
+            id = zone_list[mark["zone"]]
+            mark["zone_id"] = TerritoryType_list[id]
+            mark["map_id"] = map_list2[id]
+        with open("marks_id.json", encoding="utf8", mode="w") as f:
+            json.dump(marks, f, ensure_ascii=False, indent=4, sort_keys=True)
+
 # 实际太多了，根本用不了，建议用export_map.txt整理好的
 def get_map_list():
     map_list = []
@@ -155,21 +183,40 @@ def delete_png_under_folder(root):
                 os.remove(current)
 
 
+def create_cmd(save_path):
+    # 打开 map_list_from_zone_info.txt，复制到map_list.txt
+    path = "map_list_from_zone_info.txt"
+    command = []
+    with open(path, encoding="utf8", mode="r") as f:
+        for line in f:
+            # 每行改写成ConsoleTools.exe /extract + line.strip()
+            command.append(
+                "ConsoleTools.exe /extract " + line.strip() + " " + save_path + "\\" + line.strip().replace(
+                    "/", "\\"))
+    # cmd执行命令
+    with open("cmd.txt", encoding="utf8", mode="w") as f:
+        for x in command:
+            f.write(x + "\n")
+
+
 
 if __name__ == '__main__':
     old_path = "F:\\ffxiv\\Resource_TT\\Saved\\UI\\地图"
     current_path = "F:\GitHub\\ffxiv-huntmaps-maker\\Saved\\UI\\地图"
     output = "F:\\GitHub\\ffxiv-huntmaps-maker\\ui\\map"
+    tex_output = r"F:\GitHub\ffxiv-huntmaps-maker\ui_tex"
+    create_cmd(tex_output)
     # print(get_place_name())
-
+    # transfer_map_name_to_id()
     # with open("temp.txt", mode="w", encoding="utf8") as f:
     #     for value in get_action_list().items():
     #         f.write("{\"%s\",\"%s\"}," % (value[0], value[1]))
     # for value in get_action_list().items():
     #     print("{\"%s\",\"%s\"}," % (value[0], value[1]))
-    tran_marks()
+    # tran_marks()
     # tran_zone_info()
     # rename_map(current_path, False)
     # get_map_list()
     # delete_png_under_folder(output)
     # get_map_list_from_zone_info()
+
